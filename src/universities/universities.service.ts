@@ -2,6 +2,7 @@ import { HttpService } from '@nestjs/axios';
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { CreateUniversities } from 'src/dtos/create-universities.dto';
+import { PopulateUniversities } from 'src/dtos/populate-universities.dto';
 import { UpdateUniversities } from 'src/dtos/update-universties.dto';
 import { Universitie } from './interfaces/universities.interface';
 type UniversitieType = {
@@ -20,9 +21,9 @@ export class UniversitiesService {
     private readonly httpService: HttpService,
   ) {}
 
-  async getUniversities() {
+  async populate(region: PopulateUniversities) {
     try {
-      const url = 'http://universities.hipolabs.com/search?country=argentina';
+      const url = `http://universities.hipolabs.com/search?country=${region.country.toLowerCase()}`;
       const { data } = await this.httpService
         .get<UniversitieType[]>(url)
         .toPromise();
@@ -33,6 +34,7 @@ export class UniversitiesService {
   }
 
   async create(createUniversities: CreateUniversities): Promise<Universitie> {
+    createUniversities.country = createUniversities.country.toLowerCase();
     const created = new this.universitieModel(createUniversities);
     const model = await this.universitieModel.find().exec();
     model.map((item) => {
@@ -48,7 +50,7 @@ export class UniversitiesService {
   }
 
   async findAll(): Promise<Universitie[]> {
-    return this.universitieModel
+    return await this.universitieModel
       .find()
       .select('name')
       .select('country')
