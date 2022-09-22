@@ -3,10 +3,10 @@ import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UniversitiesModule } from './universities/universities.module';
-import { DbModule } from './db/db.module';
+import { DatabaseModule } from './db/db.module';
 
 @Module({
-  imports: [ConfigModule.forRoot(), UniversitiesModule, DbModule],
+  imports: [ConfigModule.forRoot(), UniversitiesModule, DatabaseModule],
   controllers: [AppController],
   providers: [AppService],
 })
