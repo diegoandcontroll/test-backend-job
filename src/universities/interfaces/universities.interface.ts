@@ -6,5 +6,5 @@ export interface Universitie extends Document {
   readonly name: string;
   readonly country: string;
   readonly domains: [string];
-  readonly state_province: null;
+  readonly state_province: boolean;
 }

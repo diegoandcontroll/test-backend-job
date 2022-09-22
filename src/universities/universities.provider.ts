@@ -5,7 +5,7 @@ export const universitiesProviders = [
   {
     provide: 'UNIVERSITIES_MODEL',
     useFactory: (connection: Connection) =>
-      connection.model('Cat', UniversitieSchema),
+      connection.model('Universities', UniversitieSchema),
     inject: ['DATABASE_CONNECTION'],
   },
 ];

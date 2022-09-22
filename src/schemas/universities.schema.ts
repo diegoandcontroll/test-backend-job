@@ -6,5 +6,5 @@ export const UniversitieSchema = new mongoose.Schema({
   name: String,
   country: String,
   domains: [String],
-  state_province: null,
+  state_province: String,
 });
