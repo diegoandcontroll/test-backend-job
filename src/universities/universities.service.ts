@@ -48,7 +48,12 @@ export class UniversitiesService {
   }
 
   async findAll(): Promise<Universitie[]> {
-    return this.universitieModel.find().exec();
+    return this.universitieModel
+      .find()
+      .select('name')
+      .select('country')
+      .select('state_province')
+      .exec();
   }
 
   async findOne(id: string): Promise<Universitie> {
