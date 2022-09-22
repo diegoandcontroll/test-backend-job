@@ -1,12 +1,12 @@
-import { IsString, IsNotEmpty, IsOptional } from 'class-validator';
+import { IsString, IsOptional } from 'class-validator';
 export class UpdateUniversities {
-  @IsNotEmpty()
-  web_pages: [string];
+  @IsOptional()
+  web_pages?: [string];
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
-  name: string;
+  name?: string;
 
-  @IsNotEmpty()
-  domains: [string];
+  @IsOptional()
+  domains?: [string];
 }

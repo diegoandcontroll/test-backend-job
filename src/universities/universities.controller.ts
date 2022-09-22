@@ -24,18 +24,22 @@ export class UniversitiesController {
     return this.universitiesService.findAll();
   }
 
+  @Get('test')
+  async getUniversities() {
+    return this.universitiesService.getUniversities();
+  }
   @Get(':id')
   async findOne(@Param('id') id: string) {
-    return null;
+    return this.universitiesService.findOne(id);
   }
 
   @Put(':id')
   async update(@Param('id') id: string, @Body() body: UpdateUniversities) {
-    return null;
+    return this.universitiesService.update(id, body);
   }
 
   @Delete(':id')
   async delete(@Param('id') id: string) {
-    return null;
+    return this.universitiesService.delete(id);
   }
 }
