@@ -24,35 +24,41 @@ export class UniversitiesService {
   ) {}
 
   async populate(region: PopulateUniversities) {
-    const saved = await this.universitieModel.find();
-    let i = 0;
-    try {
-      for await (const doc of saved) {
-        i = i + 1;
-        region.country.map(async (linkUrl) => {
-          const url = `http://universities.hipolabs.com/search?country=${linkUrl}`;
-          const { data } = await this.httpService2
-            .get<UniversitieType[]>(url)
-            .toPromise()
-            .finally(() => {
-              return true;
-            });
-
-          for await (const item of data) {
-            if (
-              item.name === doc.name &&
-              item.country === doc.country &&
-              item['state-province'] === doc['state-province']
-            ) {
-              return null;
-            }
-          }
-        });
-      }
-    } catch (err) {
-      return null;
+    switch (await this.universitieModel.count()) {
+      case 1021:
+        throw new HttpException(
+          'POPULATE ALL COUNTRYS',
+          HttpStatus.BAD_REQUEST,
+        );
+      case 1022:
+        throw new HttpException(
+          'POPULATE ALL COUNTRYS',
+          HttpStatus.BAD_REQUEST,
+        );
+      case 1023:
+        throw new HttpException(
+          'POPULATE ALL COUNTRYS',
+          HttpStatus.BAD_REQUEST,
+        );
+      case 1024:
+        throw new HttpException(
+          'POPULATE ALL COUNTRYS',
+          HttpStatus.BAD_REQUEST,
+        );
+      case 1025:
+        throw new HttpException(
+          'POPULATE ALL COUNTRYS',
+          HttpStatus.BAD_REQUEST,
+        );
+      case 1026:
+        throw new HttpException(
+          'POPULATE ALL COUNTRYS',
+          HttpStatus.BAD_REQUEST,
+        );
     }
-    if (i <= 0) {
+    if ((await this.universitieModel.count()) === 1020) {
+      throw new HttpException('POPULATE ALL COUNTRYS', HttpStatus.BAD_REQUEST);
+    } else {
       region.country.map(async (item) => {
         const url = `http://universities.hipolabs.com/search?country=${item}`;
         const { data } = await this.httpService
@@ -75,10 +81,6 @@ export class UniversitiesService {
         });
       });
     }
-
-    return {
-      message: 'POPULATED FINISH',
-    };
   }
 
   async create(createUniversities: CreateUniversities): Promise<Universitie> {
