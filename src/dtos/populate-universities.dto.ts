@@ -1,6 +1,5 @@
-import { IsString, IsNotEmpty } from 'class-validator';
+import { IsNotEmpty } from 'class-validator';
 export class PopulateUniversities {
   @IsNotEmpty()
-  @IsString()
-  country: string;
+  country: [string];
 }

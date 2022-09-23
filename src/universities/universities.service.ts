@@ -22,16 +22,30 @@ export class UniversitiesService {
   ) {}
 
   async populate(region: PopulateUniversities) {
+    const model = await this.universitieModel.find().exec();
     try {
-      const url = `http://universities.hipolabs.com/search?country=${region.country.toLowerCase()}`;
-      const { data } = await this.httpService
-        .get<UniversitieType[]>(url)
-        .toPromise();
-      data.map(async (item) => {
-        const created = new this.universitieModel(item);
-        await created.save();
+      region.country.map(async (item) => {
+        console.log(item);
+        const url = `http://universities.hipolabs.com/search?country=${item}`;
+        const { data } = await this.httpService
+          .get<UniversitieType[]>(url)
+          .toPromise();
+        data.map(async (item) => {
+          const created = new this.universitieModel(item);
+          model.map(async (itemSaved) => {
+            if (
+              itemSaved.name !== created.name &&
+              itemSaved.country !== created.country &&
+              itemSaved['state-province'] !== created['state-province']
+            ) {
+            }
+          });
+          await created.save();
+          return {
+            data: item,
+          };
+        });
       });
-      return data;
     } catch (err) {
       throw new HttpException('ERROR TO POPULATE', HttpStatus.BAD_REQUEST);
     }
