@@ -6,12 +6,12 @@ import { PopulateUniversities } from 'src/dtos/populate-universities.dto';
 import { UpdateUniversities } from 'src/dtos/update-universties.dto';
 import { Universitie } from './interfaces/universities.interface';
 type UniversitieType = {
-  domains: string[];
+  domains: [string];
   alpha_two_code: string;
   country: string;
-  web_pages: string[];
+  web_pages: [string];
   name: string;
-  state_province: string;
+  'state-province'?: string;
 };
 @Injectable()
 export class UniversitiesService {
@@ -27,9 +27,13 @@ export class UniversitiesService {
       const { data } = await this.httpService
         .get<UniversitieType[]>(url)
         .toPromise();
-      return data.map((item) => item);
+      data.map(async (item) => {
+        const created = new this.universitieModel(item);
+        await created.save();
+      });
+      return data;
     } catch (err) {
-      console.log(err);
+      throw new HttpException('ERROR TO POPULATE', HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -41,7 +45,7 @@ export class UniversitiesService {
       if (
         item.name === created.name &&
         item.country === created.country &&
-        item.state_province === created.state_province
+        item['state-province'] === created['state-province']
       ) {
         throw new HttpException('NAME EXIST', HttpStatus.BAD_REQUEST);
       }
