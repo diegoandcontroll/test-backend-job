@@ -34,10 +34,14 @@ export class UniversitiesService {
           const created = new this.universitieModel(item);
           model.map(async (itemSaved) => {
             if (
-              itemSaved.name !== created.name &&
-              itemSaved.country !== created.country &&
-              itemSaved['state-province'] !== created['state-province']
+              itemSaved.name === created.name &&
+              itemSaved.country === created.country &&
+              itemSaved['state-province'] === created['state-province']
             ) {
+              throw new HttpException(
+                'ERROR TO POPULATE',
+                HttpStatus.BAD_REQUEST,
+              );
             }
           });
           await created.save();
