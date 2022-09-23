@@ -67,7 +67,7 @@ $ npm run test:cov
 
 ## Documentation
 
-Documentation Api [link](https://docs.nestjs.com/support).
+Documentation Api [link](https://documenter.getpostman.com/view/15021592/2s7ZLaPF9C).
 
 ## Support
 
