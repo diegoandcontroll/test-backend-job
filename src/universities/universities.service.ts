@@ -1,5 +1,6 @@
 import { HttpService } from '@nestjs/axios';
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+
 import { Model } from 'mongoose';
 import { CreateUniversities } from 'src/dtos/create-universities.dto';
 import { PopulateUniversities } from 'src/dtos/populate-universities.dto';
@@ -19,44 +20,68 @@ export class UniversitiesService {
     @Inject('UNIVERSITIES_MODEL')
     private universitieModel: Model<Universitie>,
     private readonly httpService: HttpService,
+    private readonly httpService2: HttpService,
   ) {}
 
   async populate(region: PopulateUniversities) {
-    const model = await this.universitieModel.find().exec();
+    const saved = await this.universitieModel.find();
+    let i = 0;
     try {
+      for await (const doc of saved) {
+        i = i + 1;
+        region.country.map(async (linkUrl) => {
+          const url = `http://universities.hipolabs.com/search?country=${linkUrl}`;
+          const { data } = await this.httpService2
+            .get<UniversitieType[]>(url)
+            .toPromise()
+            .finally(() => {
+              return true;
+            });
+
+          for await (const item of data) {
+            if (
+              item.name === doc.name &&
+              item.country === doc.country &&
+              item['state-province'] === doc['state-province']
+            ) {
+              return null;
+            }
+          }
+        });
+      }
+    } catch (err) {
+      return null;
+    }
+    if (i <= 0) {
       region.country.map(async (item) => {
-        console.log(item);
         const url = `http://universities.hipolabs.com/search?country=${item}`;
         const { data } = await this.httpService
           .get<UniversitieType[]>(url)
           .toPromise();
         data.map(async (item) => {
-          const created = new this.universitieModel(item);
-          model.map(async (itemSaved) => {
-            if (
-              itemSaved.name === created.name &&
-              itemSaved.country === created.country &&
-              itemSaved['state-province'] === created['state-province']
-            ) {
-              throw new HttpException(
-                'ERROR TO POPULATE',
-                HttpStatus.BAD_REQUEST,
-              );
-            }
-          });
-          await created.save();
-          return {
-            data: item,
-          };
+          await this.universitieModel
+            .insertMany([
+              {
+                name: item.name,
+                'state-province': item['state-province'],
+                country: item.country,
+                web_pages: item.web_pages,
+                domains: item.domains,
+                alpha_two_code: item.alpha_two_code,
+              },
+            ])
+            .then(() => console.log('Data Insert'))
+            .catch((err) => console.log(err));
         });
       });
-    } catch (err) {
-      throw new HttpException('ERROR TO POPULATE', HttpStatus.BAD_REQUEST);
     }
+
+    return {
+      message: 'POPULATED FINISH',
+    };
   }
 
   async create(createUniversities: CreateUniversities): Promise<Universitie> {
-    createUniversities.country = createUniversities.country.toLowerCase();
     const created = new this.universitieModel(createUniversities);
     const model = await this.universitieModel.find().exec();
     model.map((item) => {
@@ -65,7 +90,9 @@ export class UniversitiesService {
         item.country === created.country &&
         item['state-province'] === created['state-province']
       ) {
-        throw new HttpException('NAME EXIST', HttpStatus.BAD_REQUEST);
+        throw new HttpException('NAME EXIST', HttpStatus.CONFLICT);
+      } else {
+        return true;
       }
     });
     return created.save();

@@ -20,5 +20,5 @@ export class CreateUniversities {
 
   @IsOptional()
   @IsString()
-  state_province: string;
+  'state-province': string;
 }
