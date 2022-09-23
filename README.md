@@ -39,6 +39,7 @@ $ npm install or yarn
 Create .env file
 
 Add MONGO_URL in file
+Add PORT to file
 ```
 
 ```bash
