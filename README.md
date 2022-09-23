@@ -29,10 +29,17 @@
 ## Installation
 
 ```bash
-$ npm install
+$ npm install or yarn
+
 ```
 
 ## Running the app
+
+```
+Create .env file
+
+Add MONGO_URL in file
+```
 
 ```bash
 # development
@@ -57,6 +64,10 @@ $ npm run test:e2e
 # test coverage
 $ npm run test:cov
 ```
+
+## Documentation
+
+Documentation Api [link](https://docs.nestjs.com/support).
 
 ## Support
 
