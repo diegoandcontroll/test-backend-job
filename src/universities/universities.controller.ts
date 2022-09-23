@@ -46,7 +46,7 @@ export class UniversitiesController {
     const query = this.universitieModel.find(options);
 
     const page: number = parseInt(req.query.page as any) || 1;
-    const limit = 20;
+    const limit = parseInt(req.query.limit as any) || 20;
     const total = await this.universitieModel.count(options);
 
     const data = await query
