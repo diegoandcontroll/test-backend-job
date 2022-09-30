@@ -50,7 +50,8 @@ $ npm run start
 $ npm run start:dev
 
 # production mode
-$ npm run start:prod
+$ npm run build or yarn build
+$ npm run start:prod or yarn start:prod
 ```
 
 ## Test
